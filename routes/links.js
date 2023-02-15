@@ -8,4 +8,20 @@ router.get("/", async(req,res)=>{
     res.json(result)
 })
 
+
+router.get("/add", (req,res)=>{
+    res.render("links/add")
+})
+
+
+router.post("/add", (req,res)=>{
+    const { title, url , description} = req.body
+    const newLink = {
+        title,
+        url,
+        description
+    }
+    console.log(newLink)
+    res.send("recivido")
+})
 module.exports=router
