@@ -3,9 +3,9 @@ const router = express.Router()
 
 const pool = require("../database")
 
-router.get("/", async(req,res)=>{
-    const [result] = await pool.query("SELECT 1+1")
-    res.json(result)
+router.get("/", async(req,res, next)=>{
+    const [links] = await pool.query("SELECT * FROM links")
+    res.render("links/list", {links})
 })
 
 
@@ -14,14 +14,21 @@ router.get("/add", (req,res)=>{
 })
 
 
-router.post("/add", (req,res)=>{
-    const { title, url , description} = req.body
+router.post("/add", async (req,res)=>{
+    const { title, url, description } = req.body
     const newLink = {
         title,
         url,
         description
     }
-    console.log(newLink)
-    res.send("recivido")
+    await pool.query("INSERT INTO links SET ?", [newLink])
+    res.redirect("/links")
 })
+
+router.get("/delete/:id", async (req,res)=>{
+    const {id} = req.params
+    await pool.query("DELETE FROM links WHERE id = ?",[id])
+    res.redirect("/links")
+})
+
 module.exports=router
